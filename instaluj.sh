@@ -11,14 +11,14 @@ set -euo pipefail
 H=$(hostname)
 mkdir -p ~/.ssh && chmod 700 ~/.ssh
 touch ~/.ssh/config && chmod 600 ~/.ssh/config
-for r in agent config content; do
+for r in agent config content kalico moonraker crowsnest cartographer mainsail; do
   [ -f ~/.ssh/revo_deploy_$r ] || ssh-keygen -q -t ed25519 -N "" -C "revo-$r@$H" -f ~/.ssh/revo_deploy_$r
   grep -q "Host github-revo-$r\$" ~/.ssh/config || printf "Host github-revo-%s\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/revo_deploy_%s\n  IdentitiesOnly yes\n\n" $r $r >> ~/.ssh/config
 done
 grep -q "^github.com ssh-ed25519" ~/.ssh/known_hosts 2>/dev/null || ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
 
 brak=0
-for r in agent config content; do
+for r in agent config content kalico moonraker crowsnest cartographer mainsail; do
   if ! git ls-remote -q git@github-revo-$r:revotech3d/revo-$r.git HEAD >/dev/null 2>&1; then
     [ $brak = 0 ] && echo && echo "== Ta maszyna nie ma jeszcze dostępu do repozytoriów Revo OS."
     brak=1
